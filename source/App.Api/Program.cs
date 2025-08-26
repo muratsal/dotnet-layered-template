@@ -1,4 +1,7 @@
+using App.Application.Interfaces;
+using App.Infrastructure;
 using App.Infrastructure.Data;
+using App.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -17,6 +20,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // DbContext'i dependency injection container'a ekle
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();  
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
