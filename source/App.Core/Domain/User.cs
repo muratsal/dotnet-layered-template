@@ -22,9 +22,7 @@ namespace App.Core.Domain
         public ICollection<Role> RoleUpdatedByUsers { get; set; } = new List<Role>();
         public ICollection<Permission> PermissionCreatedByUsers { get; set; } = new List<Permission>();
         public ICollection<Permission> PermissionUpdatedByUsers { get; set; } = new List<Permission>();
-
         public ICollection<RolePermission> RolePermissionCreatedByUsers { get; set; } = new List<RolePermission>();
         public ICollection<RolePermission> RolePermissionUpdatedByUsers { get; set; } = new List<RolePermission>();
-
     }
 }

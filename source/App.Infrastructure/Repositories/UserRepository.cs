@@ -16,14 +16,14 @@ namespace App.Infrastructure.Repositories
         {
            
         }
-        public async Task<IEnumerable<User>> GetUserWithDetailAsync(int id)
+        public async Task<User?> GetUserWithDetailAsync(int id)
         {
-           return await _context.Set<User>()
-                  .Include(x => x.UserRoles)
-                  .ThenInclude(x => x.Role)
-                  .ThenInclude(x => x.RolePermissions)
-                  .ThenInclude(x => x.Permission)
-                  .Where(x => x.Id == id).ToListAsync();
+            return await _context.Set<User>()
+                   .Include(x => x.UserRoles)
+                   .ThenInclude(x => x.Role)
+                   .ThenInclude(x => x.RolePermissions)
+                   .ThenInclude(x => x.Permission)
+                   .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

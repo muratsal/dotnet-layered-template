@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace App.Core.Repository.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserRepository:IRepository<User>
     {
-        public  Task<IEnumerable<User>> GetUserWithDetailAsync(int id);
+        public  Task<User?> GetUserWithDetailAsync(int id);
     }
 }

@@ -1,37 +1,62 @@
 using App.Application.Interfaces;
+using App.Application.Mapper.Profiles;
+using App.Application.Services;
+using App.Core.Repository.Interfaces;
 using App.Infrastructure;
 using App.Infrastructure.Data;
 using App.Infrastructure.Repositories;
+using App.Web.Mapper.Account;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+//builder.Services.AddAutoMapper(typeof(UserViewModelProfile).Assembly);
+builder.Services.AddAutoMapper(cfg => { }, 
+    typeof(UserViewModelProfile),
+    typeof(UserProfile)
+    );
 
-var app = builder.Build();
+
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// DbContext'i dependency injection container'a ekle
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();  
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUserService, UserService>();
 
+
+
+
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
-app.MapControllers();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    // MVC route
+    endpoints.MapControllerRoute(
+        name: "mvc",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    // API route
+    endpoints.MapControllers();
+});
 
 app.Run();

@@ -22,7 +22,7 @@ namespace App.Infrastructure.Repositories
 
         public TEntity Get(int id)
         {
-            return _dbSet.Find(id)!; 
+            return _dbSet.Find(id)!;
         }
 
         public async Task<TEntity> GetAsync(int id)
@@ -36,6 +36,15 @@ namespace App.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAllPagedAsync(
+              int pageNumber,
+              int pageSize,
+        Expression<Func<TEntity, bool>>? filter = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
         {
             return await _dbSet.ToListAsync();
         }
