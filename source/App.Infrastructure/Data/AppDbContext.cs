@@ -29,7 +29,7 @@ namespace App.Infrastructure.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-8ISJN39\\SQLEXPRESS;Database=AppDb;Trusted_Connection=True;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Server=DESKTOP-TN280R6\\SQLEXPRESS\\SQLEXPRESS;Database=AppDb;Trusted_Connection=True;TrustServerCertificate=True;");
             }
         }
 

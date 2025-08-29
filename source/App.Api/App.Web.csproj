@@ -18,14 +18,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Scalar.AspNetCore" Version="2.7.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\App.Infrastructure\App.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\Api\Account\" />
   </ItemGroup>
 
 </Project>

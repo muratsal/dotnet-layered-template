@@ -8,6 +8,8 @@ using App.Infrastructure.Repositories;
 using App.Web.Mapper.Account;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Scalar.AspNetCore;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,8 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-//builder.Services.AddAutoMapper(typeof(UserViewModelProfile).Assembly);
-builder.Services.AddAutoMapper(cfg => { }, 
+
+builder.Services.AddAutoMapper(cfg => { },
     typeof(UserViewModelProfile),
     typeof(UserProfile)
     );
@@ -26,7 +28,11 @@ builder.Services.AddAutoMapper(cfg => { },
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+{
+    options.UseSqlServer(connectionString);
+  //  options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+}
+    );
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -40,7 +46,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
 }
+
+//app.UseReDoc(options =>
+//{
+//    options.SpecUrl("/openapi/v1.json");
+//});
+
+app.MapScalarApiReference();
 
 //app.UseAuthorization();
 

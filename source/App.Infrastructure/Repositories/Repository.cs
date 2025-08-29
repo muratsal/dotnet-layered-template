@@ -1,4 +1,5 @@
-﻿using App.Core.Repository.Interfaces;
+﻿using App.Core;
+using App.Core.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace App.Infrastructure.Repositories
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
     {
         protected readonly DbContext _context;
         private readonly DbSet<TEntity> _dbSet;
@@ -22,22 +23,26 @@ namespace App.Infrastructure.Repositories
 
         public TEntity Get(int id)
         {
-            return _dbSet.Find(id)!;
+            var entity = _dbSet.Find(id)!;
+            _context.Entry(entity).State = EntityState.Detached;
+            return entity;
         }
 
         public async Task<TEntity> GetAsync(int id)
         {
-            return await _dbSet.FindAsync(id) ?? throw new KeyNotFoundException();
+            var entity = await _dbSet.FindAsync(id)!;
+            _context.Entry(entity).State = EntityState.Detached;
+            return entity;
         }
 
         public IEnumerable<TEntity> GetAll()
         {
-            return _dbSet.ToList();
+            return _dbSet.AsNoTracking().ToList();
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
 
         public async Task<IEnumerable<TEntity>> GetAllPagedAsync(
@@ -46,46 +51,76 @@ namespace App.Infrastructure.Repositories
         Expression<Func<TEntity, bool>>? filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
 
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return _dbSet.Where(predicate).ToList();
+            return _dbSet.AsNoTracking().Where(predicate).ToList();
         }
 
         public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await _dbSet.Where(predicate).ToListAsync();
+            return await _dbSet.AsNoTracking().Where(predicate).ToListAsync();
         }
 
-        public void Add(TEntity entity)
+        public void Add(TEntity entity, int currentUserId)
         {
+            entity.UpdatedAt = DateTime.Now;
+            entity.UpdatedById = currentUserId;
+            entity.CreatedAt = DateTime.Now;
+            entity.CreatedById = currentUserId;
+
             _dbSet.Add(entity);
         }
 
-        public async Task AddAsync(TEntity entity)
+        public async Task AddAsync(TEntity entity, int currentUserId)
         {
+            entity.UpdatedAt = DateTime.Now;
+            entity.UpdatedById = currentUserId;
+            entity.CreatedAt = DateTime.Now;
+            entity.CreatedById = currentUserId;
+
             await _dbSet.AddAsync(entity);
         }
 
-        public void AddRange(IEnumerable<TEntity> entities)
+        public void AddRange(IEnumerable<TEntity> entities, int currentUserId)
         {
+            foreach (var item in entities)
+            {
+                item.UpdatedAt = DateTime.Now;
+                item.UpdatedById = currentUserId;
+                item.CreatedAt = DateTime.Now;
+                item.CreatedById = currentUserId;
+            }
             _dbSet.AddRange(entities);
         }
 
-        public async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        public async Task AddRangeAsync(IEnumerable<TEntity> entities, int currentUserId)
         {
+            foreach (var item in entities)
+            {
+                item.UpdatedAt = DateTime.Now;
+                item.UpdatedById = currentUserId;
+                item.CreatedAt = DateTime.Now;
+                item.CreatedById = currentUserId;
+            }
             await _dbSet.AddRangeAsync(entities);
         }
 
-        public void Update(TEntity entity)
+        public void Update(TEntity entity, int currentUserId)
         {
+            entity.UpdatedAt = DateTime.Now;
+            entity.UpdatedById = currentUserId;
+
             _dbSet.Update(entity);
         }
 
-        public async Task UpdateAsync(TEntity entity)
+        public async Task UpdateAsync(TEntity entity, int currentUserId)
         {
+            entity.UpdatedAt = DateTime.Now;
+            entity.UpdatedById = currentUserId;
+
             _dbSet.Update(entity);
             await Task.CompletedTask; // EF Core async update desteği yok, SaveChangesAsync sırasında commit edilir
         }

@@ -1,12 +1,33 @@
-﻿
+﻿@using App.Web.ViewModels.Account
+@model UserListViewModel
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>#</title>
+    <title>#Kullanıcı Listesi</title>
 </head>
 <body>
     <h1></h1>
     <p>Bu sayfa MVC tarafından render edildi.</p>
+
+    <table>
+        <tr>
+            <th>Kullaıncı No</th>
+            <th>Kullaıncı Adı</th>
+            <th>Adı</th>
+            <th>Soyadı</th>
+        </tr>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <th>@user.Id</th>
+                    <th>@user.UserName</th>
+                    <th>@user.FirstName</th>
+                    <th>@user.LastName</th>
+                </tr>
+            }
+        </tbody>
+    </table>
 </body>
 </html>

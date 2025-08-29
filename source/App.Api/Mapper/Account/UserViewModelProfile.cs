@@ -1,4 +1,4 @@
-﻿using App.Application.DTOs;
+﻿using App.Application.DTOs.User;
 using App.Web.ViewModels.Account;
 using AutoMapper;
 

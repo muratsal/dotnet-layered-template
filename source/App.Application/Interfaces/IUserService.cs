@@ -1,21 +1,21 @@
 ﻿using App.Core.Domain;
-using App.Application.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using App.Application.DTOs.User;
 
 namespace App.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<User?> GetByIdAsync(int id);
+        Task<UserDto?> GetByIdAsync(int id);
         Task<IEnumerable<UserDto>> GetAllAsync();
-        Task<User?> GetUserWithDetailAsync(int id);
+        Task<UserDto?> GetUserWithDetailAsync(int id);
         Task<IEnumerable<UserDto>> GetUserBy(string userName,string email);
-        Task<UserDto> CreateUserAsync(User user);
-        Task UpdateUserAsync(User user);
+        Task<UserDto> CreateUserAsync(CreateUserDto userDto,int currentUserId);
+        Task UpdateUserAsync(UpdateUserDto user, int currentUserId);
         Task DeleteUserAsync(int id);
 
     }

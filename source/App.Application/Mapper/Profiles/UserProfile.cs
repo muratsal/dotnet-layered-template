@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using App.Application.DTOs;
+using App.Application.DTOs.User;
 using App.Core.Domain;
 using AutoMapper;
 
@@ -15,6 +15,8 @@ namespace App.Application.Mapper.Profiles
         {
             CreateMap<User, UserDto>();  
             CreateMap<UserDto, User>(); 
+            CreateMap<CreateUserDto, User>(); 
+            CreateMap<UpdateUserDto, User>(); 
 
             CreateMap<User, UserDetailedDto>()
                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src =>

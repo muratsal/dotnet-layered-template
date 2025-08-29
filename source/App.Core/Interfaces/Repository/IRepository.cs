@@ -15,12 +15,12 @@ namespace App.Core.Repository.Interfaces
         Task<IEnumerable<TEntity>> GetAllAsync();
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
         Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
-        void Add(TEntity entity);
-        Task AddAsync(TEntity entity);
-        void AddRange(IEnumerable<TEntity> entities);
-        Task AddRangeAsync(IEnumerable<TEntity> entities);
-        void Update(TEntity entity);
-        Task UpdateAsync(TEntity entity);
+        void Add(TEntity entity, int currentUserId);
+        Task AddAsync(TEntity entity, int currentUserId);
+        void AddRange(IEnumerable<TEntity> entities, int currentUserId);
+        Task AddRangeAsync(IEnumerable<TEntity> entities, int currentUserId);
+        void Update(TEntity entity, int currentUserId);
+        Task UpdateAsync(TEntity entity, int currentUserId);
         void Remove(TEntity entity);
         Task RemoveAsync(TEntity entity);
         void RemoveRange(IEnumerable<TEntity> entities);
