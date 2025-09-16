@@ -30,7 +30,9 @@ namespace App.Infrastructure.Repositories
 
         public async Task<TEntity> GetAsync(int id)
         {
-            var entity = await _dbSet.FindAsync(id)!;
+            var entity = await _dbSet.FindAsync(id);
+            if (entity == null)
+                throw new KeyNotFoundException($"{typeof(TEntity).Name} with id {id} not found.");
             _context.Entry(entity).State = EntityState.Detached;
             return entity;
         }

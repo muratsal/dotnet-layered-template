@@ -2,6 +2,7 @@
 using App.Application.Interfaces;
 using App.Application.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,12 +14,13 @@ namespace App.Web.Controllers.Api.Account
     {
         private readonly IUserService _userService;
         private readonly ILogger<UserController> _logger;
-        public UserController(IUserService userService, ILogger<UserController>  logger)
+        public UserController(IUserService userService, ILogger<UserController> logger)
         {
             _userService = userService;
             _logger = logger;
         }
 
+        [Authorize(Policy = "users.read")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
@@ -26,36 +28,62 @@ namespace App.Web.Controllers.Api.Account
             return Ok(users);
         }
 
+        [Authorize(Policy = "users.read")]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUser(int id)
         {
-            var user = await _userService.GetByIdAsync(id);
-            if (user is null)
+            try
+            {
+                var user = await _userService.GetByIdAsync(id);
+                return Ok(user);
+            }
+            catch (KeyNotFoundException ex)
             {
                 _logger.LogWarning("User not found. Id: {UserId}", id);
-                return NotFound();
+                return NotFound(new { message = ex.Message });
             }
-            return Ok(user);
         }
 
         [HttpPost]
         public async Task<ActionResult<UserDto>> CreateUser([FromBody] CreateUserDto userDto)
         {
-            UserDto user = await _userService.CreateUserAsync(userDto,1);
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Invalid CreateUser request. Errors: {Errors}",
+                    string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+                return BadRequest(ModelState);
+            }
+
+            UserDto user = await _userService.CreateUserAsync(userDto, 1);
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUser(int id, [FromBody] UpdateUserDto userDto)
         {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Invalid UpdateUser request. Errors: {Errors}",
+                    string.Join(", ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+                return BadRequest(ModelState);
+            }
+
             if (id != userDto.Id)
                 return BadRequest();
 
-            var user = await _userService.GetByIdAsync(id);
-            if (user == null)
-                return NotFound();
+            try
+            {
+                var user = await _userService.GetByIdAsync(id);
+                if (user == null)
+                    return NotFound();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning("User not found. Id: {UserId}", id);
+                return NotFound(new { message = ex.Message });
+            }
 
-            await _userService.UpdateUserAsync(userDto,1);
+            await _userService.UpdateUserAsync(userDto, 1);
 
             return NoContent();
         }
@@ -63,11 +91,19 @@ namespace App.Web.Controllers.Api.Account
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            var user = await _userService.GetByIdAsync(id);
-            if (user == null)
-                return NotFound();
-
-            await _userService.DeleteUserAsync(user.Id);
+            try
+            {
+                var user = await _userService.GetByIdAsync(id);
+                if (user is not null)
+                {
+                    await _userService.DeleteUserAsync(user.Id);
+                }
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning("User not found. Id: {UserId}", id);
+                return NotFound(new { message = ex.Message });
+            }
 
             return NoContent();
         }
