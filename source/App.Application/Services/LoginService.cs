@@ -1,7 +1,9 @@
 ﻿using App.Application.Interfaces;
 using App.Core.Domain;
 using App.Core.Repository.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -16,10 +18,12 @@ namespace App.Application.Services
     public class LoginService : ILoginService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IConfiguration _configuration;
 
-        public LoginService(IUserRepository userRepository)
+        public LoginService(IUserRepository userRepository,IConfiguration configuration)
         {
             _userRepository = userRepository;
+            _configuration = configuration;
         }
 
         public async Task<User?> AuthenticateAsync(string username, string password)
@@ -49,7 +53,8 @@ namespace App.Application.Services
             var permissions = GetPermissionsAsync(user.Id).Result;
             claims.AddRange(permissions.Select(p => new Claim("permissions", p)));
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("lfıoehasşlfhdşslajfhşdlsajfbşldsajbhfşdsljbf"));
+            var secret = _configuration["JwtSettings:Secret"];
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(

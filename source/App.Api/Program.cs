@@ -1,6 +1,7 @@
 using App.Application.Interfaces;
 using App.Application.Mapper.Profiles;
 using App.Application.Services;
+using App.Core.Interfaces.Repository;
 using App.Core.Repository.Interfaces;
 using App.Infrastructure;
 using App.Infrastructure.Data;
@@ -72,18 +73,19 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("users.read", policy =>
         policy.Requirements.Add(new PermissionRequirement("users.read")));
+    options.AddPolicy("roles.read", policy =>
+       policy.Requirements.Add(new PermissionRequirement("roles.read")));
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IRoleRepository,RoleRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
-
-
-
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

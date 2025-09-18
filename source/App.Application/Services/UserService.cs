@@ -68,8 +68,8 @@ namespace App.Application.Services
 
         public async Task UpdateUserAsync(UpdateUserDto userDto,int currentUserId)
         {
-            var dbUser = _unitOfWork.Users.Get(userDto.Id);
-            var user = _mapper.Map<UpdateUserDto,User>(userDto,dbUser);
+            var dbUser = await _unitOfWork.Users.GetAsync(userDto.Id);
+            _mapper.Map<UpdateUserDto,User>(userDto,dbUser);
             await _unitOfWork.Users.UpdateAsync(dbUser,currentUserId);
             await _unitOfWork.CompleteAsync();
         }

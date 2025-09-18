@@ -1,4 +1,5 @@
-﻿using App.Core.Repository.Interfaces;
+﻿using App.Core.Interfaces.Repository;
+using App.Core.Repository.Interfaces;
 using App.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -12,13 +13,19 @@ namespace App.Infrastructure
     {
         private readonly AppDbContext _context;
         public IUserRepository Users { get; }
+        public IRoleRepository Roles { get; }
+        public  IPermissionRepository Permissions { get; }
 
         public UnitOfWork(AppDbContext context,
-                          IUserRepository users
+                          IUserRepository users,
+                          IRoleRepository roles,
+                          IPermissionRepository permissions
                           )
         {
             _context = context;
             Users = users;
+            Roles = roles;
+            Permissions = permissions;
 
         }
 

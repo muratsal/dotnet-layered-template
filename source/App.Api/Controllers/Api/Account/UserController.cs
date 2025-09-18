@@ -1,6 +1,7 @@
 ﻿using App.Application.DTOs.User;
 using App.Application.Interfaces;
 using App.Application.Services;
+using App.Web.Shared.Authorization;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -43,7 +44,7 @@ namespace App.Web.Controllers.Api.Account
                 return NotFound(new { message = ex.Message });
             }
         }
-
+        [Authorize(Policy = "users.read")]
         [HttpPost]
         public async Task<ActionResult<UserDto>> CreateUser([FromBody] CreateUserDto userDto)
         {
@@ -54,10 +55,10 @@ namespace App.Web.Controllers.Api.Account
                 return BadRequest(ModelState);
             }
 
-            UserDto user = await _userService.CreateUserAsync(userDto, 1);
+            UserDto user = await _userService.CreateUserAsync(userDto, User.GetUserId()!.Value);
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
         }
-
+        [Authorize(Policy = "users.read")]
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUser(int id, [FromBody] UpdateUserDto userDto)
         {
@@ -83,11 +84,12 @@ namespace App.Web.Controllers.Api.Account
                 return NotFound(new { message = ex.Message });
             }
 
-            await _userService.UpdateUserAsync(userDto, 1);
+            await _userService.UpdateUserAsync(userDto, User.GetUserId()!.Value);
 
             return NoContent();
         }
 
+        [Authorize(Policy = "users.read")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
