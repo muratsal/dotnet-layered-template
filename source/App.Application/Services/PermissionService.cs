@@ -29,29 +29,34 @@ namespace App.Application.Services
             return _mapper.Map<PermissionDto>(permission);
         }
 
-        public async  Task DeletePermissionAsync(int id)
+        public async Task DeletePermissionAsync(int id)
         {
-           var permission =await _unitOfWork.Roles.GetAsync(id);
-            if(permission is not null)
+            var permission = await _unitOfWork.Permissions.GetAsync(id);
+            if (permission is not null)
             {
                 await _unitOfWork.Permissions.RemoveAsync(permission);
                 await _unitOfWork.CompleteAsync();
             }
         }
 
-        public Task<IEnumerable<PermissionDto>> GetAllAsync()
+        public async Task<IEnumerable<PermissionDto>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var permissions = await _unitOfWork.Permissions.GetAllAsync();
+            return _mapper.Map<IEnumerable<PermissionDto>>(permissions);
         }
 
-        public Task<PermissionDto?> GetByIdAsync(int id)
+        public async Task<PermissionDto?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+           var permission = await _unitOfWork.Permissions.GetAsync(id);
+            return _mapper.Map<PermissionDto>(permission);
         }
 
-        public Task UpdatePermissionAsync(UpdatePermissionDto role, int currentUserId)
+        public async Task UpdatePermissionAsync(UpdatePermissionDto permissionDto, int currentUserId)
         {
-            throw new NotImplementedException();
+           var dbPermission =await _unitOfWork.Permissions.GetAsync(permissionDto.Id);
+            _mapper.Map<UpdatePermissionDto, Permission>(permissionDto, dbPermission);
+            await _unitOfWork.Permissions.UpdateAsync(dbPermission, currentUserId);
+            await _unitOfWork.CompleteAsync();
         }
     }
 }
