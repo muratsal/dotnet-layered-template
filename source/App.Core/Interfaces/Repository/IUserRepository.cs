@@ -11,6 +11,6 @@ namespace App.Core.Repository.Interfaces
     {
         public  Task<User?> GetUserWithDetailAsync(int id);
         public Task<User?> GetByUsernameAsync(string userName);
-        public Task<List<string>> GetUserPermissionsAsync(int id);
+        public Task<List<Permission>> GetUserPermissionsAsync(int id,int? permissionType);
     }
 }

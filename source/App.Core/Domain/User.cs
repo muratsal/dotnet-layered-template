@@ -24,5 +24,7 @@ namespace App.Core.Domain
         public ICollection<Permission> PermissionUpdatedByUsers { get; set; } = new List<Permission>();
         public ICollection<RolePermission> RolePermissionCreatedByUsers { get; set; } = new List<RolePermission>();
         public ICollection<RolePermission> RolePermissionUpdatedByUsers { get; set; } = new List<RolePermission>();
+        public ICollection<Menu> MenuCreatedByUsers { get; set; } = new List<Menu>();
+        public ICollection<Menu> MenuUpdatedByUsers { get; set; } = new List<Menu>();
     }
 }

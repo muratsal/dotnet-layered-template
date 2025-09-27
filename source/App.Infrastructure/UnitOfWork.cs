@@ -15,17 +15,20 @@ namespace App.Infrastructure
         public IUserRepository Users { get; }
         public IRoleRepository Roles { get; }
         public  IPermissionRepository Permissions { get; }
+        public IMenuRepository Menus { get; }
 
         public UnitOfWork(AppDbContext context,
                           IUserRepository users,
                           IRoleRepository roles,
-                          IPermissionRepository permissions
+                          IPermissionRepository permissions,
+                          IMenuRepository menus
                           )
         {
             _context = context;
             Users = users;
             Roles = roles;
             Permissions = permissions;
+            Menus = menus;
 
         }
 

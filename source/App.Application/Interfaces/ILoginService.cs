@@ -1,4 +1,5 @@
-﻿using App.Core.Domain;
+﻿using App.Application.DTOs.Permission;
+using App.Core.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace App.Application.Interfaces
     {
         Task<User?> AuthenticateAsync(string username, string password);
 
-        Task<IEnumerable<string>> GetPermissionsAsync(int userId);
+        Task<IEnumerable<PermissionDto>> GetProcessPermissionsAsync(int userId);
 
         // API JWT token üretimi
         string GenerateJwtToken(User user);

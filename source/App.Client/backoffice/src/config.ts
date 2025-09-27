@@ -1,6 +1,6 @@
 export const config = {
-  apiUrl: 'http://ui-lib-demo-api.herokuapp.com',
-  themeLocalStorageKey: 'egret-theme-id',
+  apiUrl: 'http://localhost:5098/api',
+  themeLocalStorageKey: 'app_loc',
   authRoles: {
     sa: ['SA'], // Only Super Admin has access
     admin: ['SA', 'Admin'], // Only SA & Admin has access

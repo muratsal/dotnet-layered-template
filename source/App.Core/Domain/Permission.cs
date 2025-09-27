@@ -10,6 +10,7 @@ namespace App.Core.Domain
     {
         public string Key { get; set; } = null!;
         public string Description { get; set; } = null!;
+        public Int32 PermissionType { get; set; }
         public User CreatedBy { get; set; } = null!;
         public User UpdatedBy { get; set; } = null!;
 

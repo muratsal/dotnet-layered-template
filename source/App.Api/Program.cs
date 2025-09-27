@@ -31,6 +31,15 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin", policy =>
+    {
+        policy.AllowAnyOrigin()
+      .AllowAnyMethod()
+      .AllowAnyHeader();
+    });
+});
 
 builder.Services.AddAutoMapper(cfg => { },
     typeof(UserViewModelProfile),
@@ -44,7 +53,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
-  //  options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    //  options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 }
     );
 
@@ -75,13 +84,24 @@ builder.Services.AddAuthorization(options =>
         policy.Requirements.Add(new PermissionRequirement("users.read")));
     options.AddPolicy("roles.read", policy =>
        policy.Requirements.Add(new PermissionRequirement("roles.read")));
+    options.AddPolicy("permissions.read", policy =>
+       policy.Requirements.Add(new PermissionRequirement("permissions.read")));
+    options.AddPolicy("menus.read", policy =>
+    policy.Requirements.Add(new PermissionRequirement("menus.read")));
 });
 
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IRoleRepository,RoleRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
+
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
@@ -89,9 +109,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-
 }
-
+app.UseCors("AllowAnyOrigin");
 app.MapScalarApiReference();
 app.UseStaticFiles();
 app.UseRouting();

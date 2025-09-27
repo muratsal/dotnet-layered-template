@@ -1,5 +1,8 @@
-﻿using App.Application.Interfaces;
+﻿using App.Application.DTOs.Permission;
+using App.Application.DTOs.User;
+using App.Application.Interfaces;
 using App.Core.Domain;
+using App.Core.Enums;
 using App.Core.Repository.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -19,11 +22,13 @@ namespace App.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public LoginService(IUserRepository userRepository,IConfiguration configuration)
+        public LoginService(IUserRepository userRepository,IConfiguration configuration, IMapper mapper)
         {
             _userRepository = userRepository;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public async Task<User?> AuthenticateAsync(string username, string password)
@@ -37,9 +42,10 @@ namespace App.Application.Services
             return user;
         }
 
-        public async Task<IEnumerable<string>> GetPermissionsAsync(int userId)
+        public async Task<IEnumerable<PermissionDto>> GetProcessPermissionsAsync(int userId)
         {
-            return await _userRepository.GetUserPermissionsAsync(userId);
+            var permissions = await _userRepository.GetUserPermissionsAsync(userId,(int)PermissionType.Process);
+            return _mapper.Map<IEnumerable<PermissionDto>>(permissions);
         }
 
         public string GenerateJwtToken(User user)
@@ -50,8 +56,8 @@ namespace App.Application.Services
             new Claim(ClaimTypes.Name, user.UserName)
         };
 
-            var permissions = GetPermissionsAsync(user.Id).Result;
-            claims.AddRange(permissions.Select(p => new Claim("permissions", p)));
+            var permissions = GetProcessPermissionsAsync(user.Id).Result;
+            claims.AddRange(permissions.Select(p => new Claim("permissions", p.Key)));
 
             var secret = _configuration["JwtSettings:Secret"];
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret!));
@@ -73,8 +79,8 @@ namespace App.Application.Services
             new Claim(ClaimTypes.Name, user.UserName)
         };
 
-            var permissions = GetPermissionsAsync(user.Id).Result;
-            claims.AddRange(permissions.Select(p => new Claim("permissions", p)));
+            var permissions = GetProcessPermissionsAsync(user.Id).Result;
+            claims.AddRange(permissions.Select(p => new Claim("permissions", p.Key)));
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             return new ClaimsPrincipal(identity);

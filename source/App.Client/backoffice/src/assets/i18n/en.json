@@ -75,5 +75,56 @@
   "PRODUCTS": "Products",
   "PRODUCT DETAILS": "Product Details",
   "CART": "Cart",
-  "CHECKOUT": "Checkout"
+  "CHECKOUT": "Checkout",
+  "MAINMENU": {
+    "SYSTEM":"System",
+    "DEFINITION":"Definition"
+  },
+  "SUBMENU": {
+    "SYSTEM":{
+      "USERMANAGEMENT":"Account Management"
+    }
+  },
+  "USER":
+  {
+    "USER":"User",
+    "USERMENU":"Users",
+    "USERTITLE":"Users",
+    "USERID":"User Id"
+  },
+  "ROLE":
+  {
+    "ROLE":"User",
+    "ROLEMENU":"Roles",
+    "ROLETITLE":"Roles",
+    "ROLEID":"Role Id"
+  },
+  "PERMISSION":
+  {
+    "PERMISSION":"Permision",
+    "PERMISSIONMENU":"Permissions",
+    "PERMISSIONTITLE":"Permissions",
+    "PERMISSIONID":"Permission Id"
+  },
+  "LOG":
+  {
+    "LOG":"Log",
+    "LOGMENU":"Logs",
+    "LOGTITLE":"Logs",
+    "LOGID":"Log Id"
+  },
+  "EMAILCONFIGURATION":
+  {
+    "EMAILCONFIGURATION":"Email Configuration",
+    "EMAILCONFIGURATIONMENU":"Email Configurations",
+    "EMAILCONFIGURATIONTITLE":"Email Configurations",
+    "EMAILCONFIGURATIONID":"Email Configuration Id"
+  },
+  "PARAMETER":
+  {
+    "PARAMETER":"Parameter",
+    "PARAMETERMENU":"Parameters",
+    "PARAMETERTITLE":"Parameters",
+    "PARAMETERID":"Parameter Id"
+  }
 }

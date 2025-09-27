@@ -24,12 +24,13 @@ namespace App.Infrastructure.Data
         public DbSet<Permission> Permissions => Set<Permission>();
         public DbSet<UserRole> UserRoles => Set<UserRole>();
         public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
+        public DbSet<Menu> Menus => Set<Menu>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-TN280R6\\SQLEXPRESS\\SQLEXPRESS;Database=AppDb;Trusted_Connection=True;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Server=DESKTOP-TN280R6\\SQLEXPRESS;Database=AppDb;Trusted_Connection=True;TrustServerCertificate=True;");
             }
         }
 
@@ -139,6 +140,35 @@ namespace App.Infrastructure.Data
                   .OnDelete(DeleteBehavior.Restrict);
 
             });
+
+
+            modelBuilder.Entity<Menu>(entity =>
+            {
+                entity.Property(e => e.Icon).HasMaxLength(150);
+                entity.Property(e => e.Name).HasMaxLength(250);
+                entity.Property(e => e.Name).HasMaxLength(250);
+                entity.Property(e => e.CreatedAt)
+                   .HasColumnType("datetime")
+                   .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.UpdatedAt)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                    entity.HasOne(m => m.CreatedBy)
+              .WithMany(x => x.MenuCreatedByUsers)
+              .HasForeignKey(m => m.CreatedById)
+              .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(m => m.UpdatedBy)
+                    .WithMany(m => m.MenuUpdatedByUsers)
+                    .HasForeignKey(m => m.UpdatedById)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            });
+
+
+
 
         }
 

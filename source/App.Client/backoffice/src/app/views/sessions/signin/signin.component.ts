@@ -38,8 +38,8 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.signupForm = this.fb.group({
-      email: ['support@ui-lib.com', [Validators.required, Validators.email]],
-      password: ['12345678', Validators.required],
+      userName: ['', [Validators.required]],
+      password: ['', Validators.required],
       remember: [false]
     });
   }
@@ -61,7 +61,7 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
       this.submitButton.disabled = true;
       this.progressBar.mode = 'indeterminate';
       this.isLoading = true;
-      this.jwtAuth.signin(signinData.email, signinData.password)
+      this.jwtAuth.signin(signinData.userName, signinData.password)
       .subscribe({
         next: (response) => {
           this.router.navigateByUrl(this.jwtAuth.return);
@@ -77,14 +77,14 @@ export class SigninComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  autoSignIn() {
-    if (this.jwtAuth.return === '/') {
-      return;
-    }
-    this.egretLoader.open(`Automatically Signing you in! \n Return url: ${this.jwtAuth.return.substring(0, 20)}...`, {width: '320px'});
-    setTimeout(() => {
-      this.onSubmit();
-      this.egretLoader.close();
-    }, 2000);
-  }
+  // autoSignIn() {
+  //   if (this.jwtAuth.return === '/') {
+  //     return;
+  //   }
+  //   this.egretLoader.open(`Automatically Signing you in! \n Return url: ${this.jwtAuth.return.substring(0, 20)}...`, {width: '320px'});
+  //   setTimeout(() => {
+  //     this.onSubmit();
+  //     this.egretLoader.close();
+  //   }, 2000);
+  // }
 }

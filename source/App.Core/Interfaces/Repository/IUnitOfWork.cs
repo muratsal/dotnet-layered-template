@@ -13,6 +13,7 @@ namespace App.Core.Repository.Interfaces
         IUserRepository Users { get; }
         IRoleRepository Roles { get; }
         IPermissionRepository Permissions { get; }
+        IMenuRepository Menus { get; }
         int Complete();
         Task<int> CompleteAsync();
     }

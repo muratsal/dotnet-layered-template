@@ -33,16 +33,19 @@ namespace App.Infrastructure.Repositories
             return await _context.Set<User>().FirstOrDefaultAsync(x => x.UserName == userName);
         }
 
-        public async Task<List<string>> GetUserPermissionsAsync(int id)
+        public async Task<List<Permission>> GetUserPermissionsAsync(int id,int? permissionType)
         {
             var permissions = await _context.Set<User>()
                                      .Where(u => u.Id == id)
                                      .SelectMany(u => u.UserRoles)      
                                      .SelectMany(ur => ur.Role.RolePermissions) 
-                                     .Select(rp => rp.Permission.Key)  
+                                     .Where(x=> (!permissionType.HasValue || x.Permission.PermissionType==permissionType))
+                                     .Select(rp => rp.Permission)  
                                      .ToListAsync();
 
             return permissions;
         }
+
+       
     }
 }

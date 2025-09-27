@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace App.Infrastructure.Repositories
 {
-    public class PermisionRepository: Repository<Permission>, IPermissionRepository
+    public class PermissionRepository: Repository<Permission>, IPermissionRepository
     {
-        public PermisionRepository(AppDbContext context): base(context)
+        public PermissionRepository(AppDbContext context): base(context)
         {
                 
         }
